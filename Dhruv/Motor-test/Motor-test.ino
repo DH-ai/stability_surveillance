@@ -3,7 +3,7 @@
 #define Motor3 6
 #define Motor4 9
 #define Motor5 10
-#define Motor6 11
+// #define Motor6 11
 #include <Wire.h>
 #include <Servo.h>
 Servo motor1;
@@ -70,75 +70,103 @@ void gyro_signals(void){
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-  motor1.attach(Motor1);
-  motor2.attach(Motor2);
-  motor3.attach(Motor3);
-  motor4.attach(Motor4);
-  motor5.attach(Motor5);
-  motor6.attach(Motor6);
+  motor1.attach(Motor1,1000,2000);
+  motor1.writeMicroseconds(  1000);
+  delay(2000);
+  // motor2.attach(Motor2,1000,2000);
+  // motor2.writeMicroseconds(  1000);
+  // delay(2000);
 
-    Wire.setClock(400000);
-  Wire.begin();
-  delay(250);
+  // motor3.attach(Motor3,1000,2000);
+  // motor3.writeMicroseconds(  1000);
+  // delay(2000);
 
-  Wire.beginTransmission(0x68);
-  Wire.write(0x6B);
-  Wire.write(0x00);
-  Wire.endTransmission();
+  // motor4.attach(Motor4,1000,2000);
+  // motor4.writeMicroseconds(  1000);
+  // delay(2000);
 
-  for(rateCallibrationNumber=0; rateCallibrationNumber<5000; rateCallibrationNumber++)
-  {
-    gyro_signals();
-    rateCallibrationRoll+=rateRoll;
-    rateCallibrationPitch+=ratePitch;
-    rateCallibrationYaw+=rateYaw;
+  // motor5.attach(Motor5,1000,2000);
+  // motor5.writeMicroseconds(  1000);
+  // delay(2000 );
+  // motor2.attach(Motor2);
+  // motor3.attach(Motor3);
+  // motor4.attach(Motor4);
+  // motor5.attach(Motor5);
+  // motor6.attach(Motor6);
 
-    rateCallibrationAccX+=accValX;
-    rateCallibrationAccY+=accValY;
-    rateCallibrationAccZ+=accValZ;
+  //   Wire.setClock(400000);
+  // Wire.begin();
+  // delay(250);
+
+  // Wire.beginTransmission(0x68);
+  // Wire.write(0x6B);
+  // Wire.write(0x00);
+  // Wire.endTransmission();
+
+  // for(rateCallibrationNumber=0; rateCallibrationNumber<5000; rateCallibrationNumber++)
+  // {
+  //   gyro_signals();
+  //   rateCallibrationRoll+=rateRoll;
+  //   rateCallibrationPitch+=ratePitch;
+  //   rateCallibrationYaw+=rateYaw;
+
+  //   rateCallibrationAccX+=accValX;
+  //   rateCallibrationAccY+=accValY;
+  //   rateCallibrationAccZ+=accValZ;
 
 
-    delay(1);
-  }
+  //   delay(1);
+  // }
 
-  rateCallibrationRoll/=5000;
-  rateCallibrationPitch/=5000;
-  rateCallibrationYaw/=5000;
-  rateCallibrationAccX/=5000;
-  rateCallibrationAccY/=5000;
-  rateCallibrationAccZ/=5000;
+  // rateCallibrationRoll/=5000;
+  // rateCallibrationPitch/=5000;
+  // rateCallibrationYaw/=5000;
+  // rateCallibrationAccX/=5000;
+  // rateCallibrationAccY/=5000;
+  // rateCallibrationAccZ/=5000;
 
 
 }
 
 void loop() {
-  motor1.writeMicroseconds(1500);  
-  motor2.writeMicroseconds(1500);  
-  motor3.writeMicroseconds(1500);  
-  motor4.writeMicroseconds(1500);  
-  motor5.writeMicroseconds(1500);  
-  motor6.writeMicroseconds(1500);  
-  gyro_signals();
-  rateRoll-=rateCallibrationRoll;
-  ratePitch-=rateCallibrationPitch;
-  rateYaw-=rateCallibrationYaw;
-  accValX -= rateCallibrationAccX;
-  accValY -= rateCallibrationAccY;
-  accValZ -= rateCallibrationAccZ;
-  Serial.print("Roll Rate   =");
-  Serial.print(rateRoll);
-  Serial.print("\nPitch Rate  =");
-  Serial.print(ratePitch);
-  Serial.print("\nYaw Rate    =");
-  Serial.println(rateYaw);
-  Serial.print("AcclerationX   =");
-  Serial.print(accValX);
-  Serial.print("\nAcclerationY  =");
-  Serial.print(accValY);
-  Serial.print("\nAcclerationZ    =");
-  Serial.println(accValZ);
+  for (int i = 1000; i <= 1500; i += 50) {
+    motor1.writeMicroseconds(i);
+    Serial.print("Throttle: ");
+    Serial.println(i);
+    delay(500);
+  }
+  delay(5000);
+  // motor2.writeMicroseconds(1500);
+  // motor3.writeMicroseconds(1500);
+  // motor4.writeMicroseconds(1500);
+  // motor5.writeMicroseconds(1500);
+
+  // motor2.writeMicroseconds(1500);  
+  // motor3.writeMicroseconds(1500);  
+  // motor4.writeMicroseconds(1500);  
+  // motor5.writeMicroseconds(1500);  
+  // motor6.writeMicroseconds(1500);  
+  // gyro_signals();
+  // rateRoll-=rateCallibrationRoll;
+  // ratePitch-=rateCallibrationPitch;
+  // rateYaw-=rateCallibrationYaw;
+  // accValX -= rateCallibrationAccX;
+  // accValY -= rateCallibrationAccY;
+  // accValZ -= rateCallibrationAccZ;
+  // Serial.print("Roll Rate   =");
+  // Serial.print(rateRoll);
+  // Serial.print("\nPitch Rate  =");
+  // Serial.print(ratePitch);
+  // Serial.print("\nYaw Rate    =");
+  // Serial.println(rateYaw);
+  // Serial.print("AcclerationX   =");
+  // Serial.print(accValX);
+  // Serial.print("\nAcclerationY  =");
+  // Serial.print(accValY);
+  // Serial.print("\nAcclerationZ    =");
+  // Serial.println(accValZ);
   
-  delay(50);
+  delay(500);
   
 
 }
