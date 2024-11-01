@@ -6,6 +6,7 @@
 // #define Motor6 11
 #include <Wire.h>
 #include <Servo.h>
+
 Servo motor1;
 Servo motor2;
 Servo motor3;
@@ -23,44 +24,32 @@ int rateCallibrationNumber;
 
 
 void gyro_signals(void){
-      Wire.beginTransmission(0x68);//hex for starting communication
-      Wire.write(0x1A);//low pass filter selection hex
-      Wire.write(0x00);//change this to select different low pass filters.(values allowed: 0-256hz, 1-188hz, 2-98hz, 3-42hz, 4-20hz, 5-10hz, 6-5hz)
-      Wire.endTransmission();
+  Wire.beginTransmission(0x68);//hex for starting communication
+  Wire.write(0x1A);//low pass filter selection hex
+  Wire.write(0x00);//change this to select different low pass filters.(values allowed: 0-256hz, 1-188hz, 2-98hz, 3-42hz, 4-20hz, 5-10hz, 6-5hz)
+  Wire.endTransmission();
 
-      Wire.beginTransmission(0x68);//hex for starting communication
-      Wire.write(0x1B);//gyro callibration
-      Wire.write(0x08);//change this to select different gyro callibrations.
-      Wire.endTransmission();
+  Wire.beginTransmission(0x68); 
+  Wire.write(0x1C);     //Acc calibration 28
+  Wire.write(0x08);     // value range for +-8g
+  Wire.endTransmission();
 
-      Wire.beginTransmission(0x68);//hex for stating communication
-      Wire.write(0x43);//import gyro output
+  Wire.beginTransmission(0x68);//hex for stating communication
+  Wire.write(0x3B);//import Acc output
+  Wire.endTransmission(false);
 
-      Wire.endTransmission();
+  Wire.requestFrom(0x68,6,true);
 
-      Wire.requestFrom(0x68,6);
 
-      int16_t gyroX= Wire.read()<<8 | Wire.read(); 
-      int16_t gyroY= Wire.read()<<8 | Wire.read(); 
-      int16_t gyroZ= Wire.read()<<8 | Wire.read(); 
 
-      Wire.beginTransmission(0x68);
-      Wire.write(0x1C);     //Acc calibration
-      Wire.write(0x08);     // value range for +-8g
-      Wire.endTransmission();
-      Wire.requestFrom(0x68,6);
+  int16_t accX= Wire.read()<<8 | Wire.read(); 
+  int16_t accY= Wire.read()<<8 | Wire.read(); 
+  int16_t accZ= Wire.read()<<8 | Wire.read();
 
-      int16_t accX= Wire.read()<<8 | Wire.read(); 
-      int16_t accY= Wire.read()<<8 | Wire.read(); 
-      int16_t accZ= Wire.read()<<8 | Wire.read();
 
-      rateRoll=(float)gyroX/256;
-      ratePitch=(float)gyroY/256;
-      rateYaw=(float)gyroZ/256;
-
-      accValX=(float)accX/256;
-      accValY=(float)accY/256;
-      accValZ=(float)accZ/256;     
+  accValX=(float)accX/4096 ;
+  accValY=(float)accY/4096 ;
+  accValZ=(float)accZ/4096 ;     
 
 
 }
@@ -68,85 +57,22 @@ void gyro_signals(void){
 
 
 void setup() {
-  // put your setup code here, to run once:
   Serial.begin(9600);
-  motor1.attach(Motor1,1000,2000);
-  motor1.writeMicroseconds(  1000);
-  delay(2000);
-  // motor2.attach(Motor2,1000,2000);
-  // motor2.writeMicroseconds(  1000);
-  // delay(2000);
+  Wire.setClock(400000);
+  Wire.begin();
+  delay(250);
 
-  // motor3.attach(Motor3,1000,2000);
-  // motor3.writeMicroseconds(  1000);
-  // delay(2000);
-
-  // motor4.attach(Motor4,1000,2000);
-  // motor4.writeMicroseconds(  1000);
-  // delay(2000);
-
-  // motor5.attach(Motor5,1000,2000);
-  // motor5.writeMicroseconds(  1000);
-  // delay(2000 );
-  // motor2.attach(Motor2);
-  // motor3.attach(Motor3);
-  // motor4.attach(Motor4);
-  // motor5.attach(Motor5);
-  // motor6.attach(Motor6);
-
-  //   Wire.setClock(400000);
-  // Wire.begin();
-  // delay(250);
-
-  // Wire.beginTransmission(0x68);
-  // Wire.write(0x6B);
-  // Wire.write(0x00);
-  // Wire.endTransmission();
-
-  // for(rateCallibrationNumber=0; rateCallibrationNumber<5000; rateCallibrationNumber++)
-  // {
-  //   gyro_signals();
-  //   rateCallibrationRoll+=rateRoll;
-  //   rateCallibrationPitch+=ratePitch;
-  //   rateCallibrationYaw+=rateYaw;
-
-  //   rateCallibrationAccX+=accValX;
-  //   rateCallibrationAccY+=accValY;
-  //   rateCallibrationAccZ+=accValZ;
-
-
-  //   delay(1);
-  // }
-
-  // rateCallibrationRoll/=5000;
-  // rateCallibrationPitch/=5000;
-  // rateCallibrationYaw/=5000;
-  // rateCallibrationAccX/=5000;
-  // rateCallibrationAccY/=5000;
-  // rateCallibrationAccZ/=5000;
+  Wire.beginTransmission(0x68);
+  Wire.write(0x6B);
+  Wire.write(0x00);
+  Wire.endTransmission();
 
 
 }
 
 void loop() {
-  for (int i = 1000; i <= 1500; i += 50) {
-    motor1.writeMicroseconds(i);
-    Serial.print("Throttle: ");
-    Serial.println(i);
-    delay(500);
-  }
-  delay(5000);
-  // motor2.writeMicroseconds(1500);
-  // motor3.writeMicroseconds(1500);
-  // motor4.writeMicroseconds(1500);
-  // motor5.writeMicroseconds(1500);
 
-  // motor2.writeMicroseconds(1500);  
-  // motor3.writeMicroseconds(1500);  
-  // motor4.writeMicroseconds(1500);  
-  // motor5.writeMicroseconds(1500);  
-  // motor6.writeMicroseconds(1500);  
-  // gyro_signals();
+  gyro_signals();
   // rateRoll-=rateCallibrationRoll;
   // ratePitch-=rateCallibrationPitch;
   // rateYaw-=rateCallibrationYaw;
@@ -159,14 +85,11 @@ void loop() {
   // Serial.print(ratePitch);
   // Serial.print("\nYaw Rate    =");
   // Serial.println(rateYaw);
-  // Serial.print("AcclerationX   =");
-  // Serial.print(accValX);
-  // Serial.print("\nAcclerationY  =");
-  // Serial.print(accValY);
-  // Serial.print("\nAcclerationZ    =");
-  // Serial.println(accValZ);
-  
-  delay(500);
-  
+  Serial.print("AX: "); Serial.print(accValX* 9.81/2);
+  Serial.print("\tAY:= "); Serial.print(accValY* 9.81/2);
+  Serial.print("\tAZ:= "); Serial.println(accValZ* 9.81/2);
+
+  delay(1000);
+
 
 }
